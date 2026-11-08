@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Movie & TV Series Recommendation Engine</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- Top Header -->
+    <header class="app-header">
+        <div class="header-content">
+            <h1 class="header-title">Global Movie & TV Series Recommendation Engine</h1>
+            <div class="header-status">
+                <span id="systemStatus" class="status-pill status-ready">Ready</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Application Shell -->
+    <div class="app-shell">
+        <!-- Left Sidebar -->
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <div class="nav-section-label">RECOMMENDATION ENGINES</div>
+                <button id="navMovies" class="nav-btn active" data-engine="movie">
+                    <span class="nav-icon">▪</span> Movie Engine
+                </button>
+                <button id="navTv" class="nav-btn" data-engine="tv">
+                    <span class="nav-icon">▪</span> Web Series Engine
+                </button>
+            </nav>
+
+            <div class="sidebar-info">
+                <div class="info-label">Current Engine</div>
+                <div id="engineLabel" class="info-value">Movies</div>
+
+                <div class="info-label" style="margin-top: 12px;">Local Cache</div>
+                <div id="cacheLabel" class="info-value">0 items cached</div>
+
+                <button id="btnSyncCache" class="btn-secondary" style="margin-top: 12px; width: 100%;">
+                    Sync Top Titles
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Alert / Notice Box -->
+            <div id="alertBox" class="alert-banner hidden">
+                <span id="alertMessage"></span>
+                <button id="alertClose" class="alert-close" aria-label="Close notification">&times;</button>
+            </div>
+
+            <!-- Active Target Recommendation Context Banner -->
+            <div id="recommendationContext" class="rec-context-banner hidden">
+                <div class="context-details">
+                    <span class="context-label">Recommendations based on:</span>
+                    <strong id="targetTitle" class="context-title"></strong>
+                    <span id="targetMeta" class="context-meta"></span>
+                </div>
+                <button id="btnClearContext" class="btn-text">Back to Browse</button>
+            </div>
+
+            <!-- Search and Controls Bar -->
+            <section class="controls-card">
+                <!-- Search Box -->
+                <form id="searchForm" class="search-form">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        class="search-input" 
+                        placeholder="Search movie title (e.g. Inception, 3 Idiots, RRR, Parasite)..." 
+                        autocomplete="off" 
+                        required
+                    >
+                    <button type="submit" class="btn-primary">Search</button>
+                    <button type="button" id="btnClearSearch" class="btn-secondary">Clear</button>
+                </form>
+
+                <!-- Filter Controls -->
+                <div class="filters-grid">
+                    <div class="filter-group">
+                        <label for="filterFeed">Discover Mode</label>
+                        <select id="filterFeed" class="filter-select">
+                            <option value="trending">Trending (This Week)</option>
+                            <option value="popular">Popular</option>
+                            <option value="top_rated">Top Rated</option>
+                            <option value="recent">Recently Released</option>
+                            <option value="custom">Filter & Discover</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="filterLanguage">Original Language</label>
+                        <select id="filterLanguage" class="filter-select">
+                            <option value="">All Languages</option>
+                            <!-- Dynamically populated or server rendered -->
+                            {% for lang in languages %}
+                                {% if lang.code %}
+                                    <option value="{{ lang.code }}">{{ lang.name }} ({{ lang.code }}) - {{ lang.industry }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="filterGenre">Genre</label>
+                        <select id="filterGenre" class="filter-select">
+                            <option value="">All Genres</option>
+                            <!-- Populated dynamically based on active engine -->
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="filterYear">Release Year</label>
+                        <select id="filterYear" class="filter-select">
+                            <option value="">All Years</option>
+                            <!-- Populated with years -->
+                        </select>
+                    </div>
+
+                    <div class="filter-group action-group">
+                        <label>&nbsp;</label>
+                        <button type="button" id="btnApplyFilters" class="btn-filter">Apply Filters</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Results Section -->
+            <section class="results-section">
+                <div class="results-header">
+                    <h2 id="resultsHeading" class="results-title">Trending Movies</h2>
+                    <span id="resultsCount" class="results-count">0 items found</span>
+                </div>
+
+                <!-- Loading Indicator -->
+                <div id="loadingIndicator" class="loading-state hidden">
+                    <div class="spinner"></div>
+                    <span id="loadingText">Processing recommendation request...</span>
+                </div>
+
+                <!-- Results List -->
+                <div id="resultsList" class="results-list">
+                    <!-- Text rows injected via JavaScript -->
+                </div>
+
+                <!-- Empty State -->
+                <div id="emptyState" class="empty-state hidden">
+                    <p class="empty-text">No matching titles found. Try adjusting your query or language filter.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
